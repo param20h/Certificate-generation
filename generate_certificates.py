@@ -33,9 +33,9 @@ class CertificateGenerator:
         self.data = pd.read_csv(csv_file)
         print(f"Loaded {len(self.data)} records from {csv_file}")
     
-    def create_template(self, width=1200, height=900):
+    def create_template(self, width=1400, height=1000):
         """
-        Create a basic certificate template
+        Create an enhanced professional certificate template
         
         Args:
             width (int): Certificate width in pixels
@@ -44,42 +44,108 @@ class CertificateGenerator:
         Returns:
             PIL.Image: Certificate template image
         """
-        # Create a new image with white background
-        img = Image.new('RGB', (width, height), color='white')
+        # Create a new image with elegant gradient background
+        img = Image.new('RGB', (width, height), color='#FDFEFE')
         draw = ImageDraw.Draw(img)
         
-        # Draw border
-        border_color = '#2C3E50'
-        border_width = 15
+        # Add subtle background with light color
+        draw.rectangle([(0, 0), (width, height)], fill='#F8F9F9')
+        
+        # Draw outer golden border
+        border_color = '#D4AF37'  # Gold
+        border_width = 20
         draw.rectangle(
-            [(border_width, border_width), 
-             (width - border_width, height - border_width)],
+            [(border_width//2, border_width//2), 
+             (width - border_width//2, height - border_width//2)],
             outline=border_color,
             width=border_width
         )
         
-        # Draw inner border
-        inner_border = 30
+        # Draw elegant double inner border
+        inner_border_1 = 40
         draw.rectangle(
-            [(inner_border, inner_border), 
-             (width - inner_border, height - inner_border)],
-            outline='#3498DB',
-            width=3
+            [(inner_border_1, inner_border_1), 
+             (width - inner_border_1, height - inner_border_1)],
+            outline='#1C2833',  # Dark navy
+            width=4
         )
         
-        # Draw decorative corners
-        corner_size = 60
-        corner_color = '#E74C3C'
-        positions = [
-            (inner_border + 10, inner_border + 10),
-            (width - inner_border - corner_size - 10, inner_border + 10),
-            (inner_border + 10, height - inner_border - corner_size - 10),
-            (width - inner_border - corner_size - 10, height - inner_border - corner_size - 10)
-        ]
+        inner_border_2 = 50
+        draw.rectangle(
+            [(inner_border_2, inner_border_2), 
+             (width - inner_border_2, height - inner_border_2)],
+            outline='#5499C7',  # Royal blue
+            width=2
+        )
         
-        for x, y in positions:
-            draw.rectangle([(x, y), (x + corner_size, y + corner_size)], 
-                          fill=corner_color)
+        # Draw decorative corner ornaments
+        corner_size = 80
+        corner_offset = 60
+        
+        # Top-left corner ornament
+        draw.ellipse([(corner_offset, corner_offset), 
+                     (corner_offset + corner_size, corner_offset + corner_size)], 
+                    outline='#D4AF37', width=3)
+        draw.line([(corner_offset, corner_offset + corner_size//2),
+                  (corner_offset + corner_size, corner_offset + corner_size//2)],
+                 fill='#D4AF37', width=2)
+        draw.line([(corner_offset + corner_size//2, corner_offset),
+                  (corner_offset + corner_size//2, corner_offset + corner_size)],
+                 fill='#D4AF37', width=2)
+        
+        # Top-right corner ornament
+        draw.ellipse([(width - corner_offset - corner_size, corner_offset), 
+                     (width - corner_offset, corner_offset + corner_size)], 
+                    outline='#D4AF37', width=3)
+        draw.line([(width - corner_offset - corner_size, corner_offset + corner_size//2),
+                  (width - corner_offset, corner_offset + corner_size//2)],
+                 fill='#D4AF37', width=2)
+        draw.line([(width - corner_offset - corner_size//2, corner_offset),
+                  (width - corner_offset - corner_size//2, corner_offset + corner_size)],
+                 fill='#D4AF37', width=2)
+        
+        # Bottom-left corner ornament
+        draw.ellipse([(corner_offset, height - corner_offset - corner_size), 
+                     (corner_offset + corner_size, height - corner_offset)], 
+                    outline='#D4AF37', width=3)
+        draw.line([(corner_offset, height - corner_offset - corner_size//2),
+                  (corner_offset + corner_size, height - corner_offset - corner_size//2)],
+                 fill='#D4AF37', width=2)
+        draw.line([(corner_offset + corner_size//2, height - corner_offset - corner_size),
+                  (corner_offset + corner_size//2, height - corner_offset)],
+                 fill='#D4AF37', width=2)
+        
+        # Bottom-right corner ornament
+        draw.ellipse([(width - corner_offset - corner_size, height - corner_offset - corner_size), 
+                     (width - corner_offset, height - corner_offset)], 
+                    outline='#D4AF37', width=3)
+        draw.line([(width - corner_offset - corner_size, height - corner_offset - corner_size//2),
+                  (width - corner_offset, height - corner_offset - corner_size//2)],
+                 fill='#D4AF37', width=2)
+        draw.line([(width - corner_offset - corner_size//2, height - corner_offset - corner_size),
+                  (width - corner_offset - corner_size//2, height - corner_offset)],
+                 fill='#D4AF37', width=2)
+        
+        # Add decorative top accent
+        accent_y = 170
+        accent_width = 400
+        accent_x = (width - accent_width) // 2
+        draw.rectangle([(accent_x, accent_y), (accent_x + accent_width, accent_y + 4)],
+                      fill='#D4AF37')
+        
+        # Add decorative stars/diamonds near title
+        star_positions = [
+            (accent_x - 40, accent_y),
+            (accent_x + accent_width + 35, accent_y)
+        ]
+        for sx, sy in star_positions:
+            # Draw diamond shape
+            draw.polygon([
+                (sx, sy - 15),
+                (sx + 15, sy),
+                (sx, sy + 15),
+                (sx - 15, sy)
+            ], fill='#D4AF37')
         
         return img
     
@@ -145,7 +211,7 @@ class CertificateGenerator:
     
     def generate_certificate(self, name, course, date, grade="", custom_fields=None):
         """
-        Generate a single certificate
+        Generate a single enhanced certificate
         
         Args:
             name (str): Recipient name
@@ -166,39 +232,136 @@ class CertificateGenerator:
         draw = ImageDraw.Draw(img)
         width, height = img.size
         
-        # Get fonts
-        title_font = self.get_font(70, bold=True)
-        subtitle_font = self.get_font(30)
-        name_font = self.get_font(55, bold=True)
-        body_font = self.get_font(35)
-        small_font = self.get_font(25)
+        # Get enhanced fonts with better sizing
+        title_font = self.get_font(85, bold=True)
+        subtitle_font = self.get_font(36)
+        name_font = self.get_font(65, bold=True)
+        body_font = self.get_font(38)
+        small_font = self.get_font(28)
+        tiny_font = self.get_font(22)
         
-        # Add certificate title
-        self.add_text_centered(draw, "CERTIFICATE", 120, title_font, '#2C3E50', width)
-        self.add_text_centered(draw, "OF ACHIEVEMENT", 200, subtitle_font, '#34495E', width)
+        # Add prestigious certificate title with shadow effect
+        title_y = 100
+        # Shadow
+        self.add_text_centered(draw, "CERTIFICATE", title_y + 2, title_font, '#95A5A6', width)
+        # Main title
+        self.add_text_centered(draw, "CERTIFICATE", title_y, title_font, '#1C2833', width)
         
-        # Add "This is to certify that"
-        self.add_text_centered(draw, "This is to certify that", 300, body_font, '#2C3E50', width)
+        # Add subtitle with elegant styling
+        subtitle_y = 195
+        self.add_text_centered(draw, "~ OF ACHIEVEMENT ~", subtitle_y, subtitle_font, '#5499C7', width)
         
-        # Add recipient name (highlighted)
-        self.add_text_centered(draw, name, 380, name_font, '#E74C3C', width)
+        # Add decorative line under subtitle
+        line_width = 350
+        line_x = (width - line_width) // 2
+        draw.rectangle([(line_x, subtitle_y + 50), (line_x + line_width, subtitle_y + 53)],
+                      fill='#D4AF37')
+        
+        # Add "This is to certify that" with better spacing
+        certify_y = 310
+        self.add_text_centered(draw, "This is proudly presented to", certify_y, body_font, '#34495E', width)
+        
+        # Add recipient name with elegant underline
+        name_y = 400
+        self.add_text_centered(draw, name, name_y, name_font, '#1C2833', width)
+        
+        # Add underline decoration for name
+        bbox = draw.textbbox((0, 0), name, font=name_font)
+        name_width = bbox[2] - bbox[0]
+        underline_x = (width - name_width) // 2
+        underline_y = name_y + 75
+        draw.line([(underline_x, underline_y), (underline_x + name_width, underline_y)],
+                 fill='#D4AF37', width=3)
         
         # Add course completion text
-        self.add_text_centered(draw, "has successfully completed", 470, body_font, '#2C3E50', width)
-        self.add_text_centered(draw, course, 540, name_font, '#3498DB', width)
+        completion_y = 505
+        self.add_text_centered(draw, "for successfully completing the course", completion_y, body_font, '#34495E', width)
         
-        # Add grade if provided
+        # Add course name with prominent styling
+        course_y = 585
+        self.add_text_centered(draw, course, course_y, name_font, '#2874A6', width)
+        
+        # Add course underline
+        bbox_course = draw.textbbox((0, 0), course, font=name_font)
+        course_width = bbox_course[2] - bbox_course[0]
+        course_underline_x = (width - course_width) // 2
+        course_underline_y = course_y + 75
+        draw.line([(course_underline_x, course_underline_y), 
+                  (course_underline_x + course_width, course_underline_y)],
+                 fill='#5499C7', width=2)
+        
+        # Add grade with badge-like design if provided
         y_offset = 0
         if grade:
-            self.add_text_centered(draw, f"with grade: {grade}", 630, body_font, '#27AE60', width)
-            y_offset = 50
+            grade_y = 695
+            y_offset = 60
+            
+            # Create a badge background for grade
+            grade_text = f"★ GRADE: {grade} ★"
+            bbox_grade = draw.textbbox((0, 0), grade_text, font=body_font)
+            grade_width = bbox_grade[2] - bbox_grade[0]
+            badge_padding = 30
+            badge_x = (width - grade_width - badge_padding * 2) // 2
+            badge_y = grade_y - 15
+            
+            # Draw badge background
+            draw.rounded_rectangle(
+                [(badge_x, badge_y), 
+                 (badge_x + grade_width + badge_padding * 2, badge_y + 60)],
+                radius=30,
+                fill='#27AE60',
+                outline='#229954',
+                width=3
+            )
+            
+            # Add grade text in white
+            self.add_text_centered(draw, grade_text, grade_y, body_font, '#FFFFFF', width)
         
-        # Add date
-        self.add_text_centered(draw, f"Date: {date}", 630 + y_offset, small_font, '#7F8C8D', width)
+        # Add date with elegant formatting
+        date_y = 695 + y_offset
+        date_text = f"Issued on {date}"
+        self.add_text_centered(draw, date_text, date_y, small_font, '#566573', width)
+        
+        # Add signature lines
+        sig_y = height - 180
+        sig_width = 250
+        left_sig_x = width // 4 - sig_width // 2
+        right_sig_x = 3 * width // 4 - sig_width // 2
+        
+        # Left signature line
+        draw.line([(left_sig_x, sig_y), (left_sig_x + sig_width, sig_y)],
+                 fill='#34495E', width=2)
+        self.add_text_centered(draw, "Director", sig_y + 15, tiny_font, '#566573', width // 2)
+        
+        # Right signature line
+        draw.line([(right_sig_x, sig_y), (right_sig_x + sig_width, sig_y)],
+                 fill='#34495E', width=2)
+        right_center = width // 2 + width // 4
+        bbox_auth = draw.textbbox((0, 0), "Authorized Signature", font=tiny_font)
+        auth_width = bbox_auth[2] - bbox_auth[0]
+        auth_x = right_center - auth_width // 2
+        draw.text((auth_x, sig_y + 15), "Authorized Signature", font=tiny_font, fill='#566573')
+        
+        # Add verification seal/stamp
+        seal_x = width - 180
+        seal_y = height - 180
+        seal_radius = 60
+        
+        # Draw circular seal
+        draw.ellipse([(seal_x - seal_radius, seal_y - seal_radius),
+                     (seal_x + seal_radius, seal_y + seal_radius)],
+                    outline='#C0392B', width=5)
+        draw.ellipse([(seal_x - seal_radius + 10, seal_y - seal_radius + 10),
+                     (seal_x + seal_radius - 10, seal_y + seal_radius - 10)],
+                    outline='#C0392B', width=2)
+        
+        # Add "VERIFIED" text in seal
+        seal_font = self.get_font(16, bold=True)
+        self.add_text_centered(draw, "VERIFIED", seal_y - 8, seal_font, '#C0392B', width + (seal_x - width//2) * 2)
         
         # Add custom fields if provided
         if custom_fields:
-            current_y = 700 + y_offset
+            current_y = 780 + y_offset
             for key, value in custom_fields.items():
                 self.add_text_centered(draw, f"{key}: {value}", current_y, small_font, '#7F8C8D', width)
                 current_y += 35
